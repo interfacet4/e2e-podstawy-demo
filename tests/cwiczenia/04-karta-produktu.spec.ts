@@ -44,3 +44,52 @@ test('cena promocyjna kremu jest taka sama na kafelku, karcie produktu i w koszy
   await expect(wierszKremu).toHaveCount(0);
   await expect(page.getByText('Koszyk jest pusty.')).toBeVisible();
 });
+
+// Osobne konto tester12, żeby ten test nie mieszał w koszyku testu wyżej (tester11).
+test('kod CZARNY20 obniża sumę do zapłaty za krem do 21,11 zł', async ({ page }) => {
+  // Logowanie jako tester12.
+  await page.goto('/logowanie');
+  await page.getByLabel('Login').fill('tester12');
+  await page.getByLabel('Hasło').fill('czarny-piatek-2026');
+  await page.getByRole('button', { name: 'Zaloguj' }).click();
+  await expect(page.getByText('Zalogowano jako tester12')).toBeVisible();
+
+  // Dodanie kremu do koszyka z tabeli produktów.
+  await page.getByRole('link', { name: 'Produkty' }).click();
+  await page
+    .getByRole('row')
+    .filter({ hasText: 'Krem do twarzy na dzień' })
+    .getByRole('button', { name: 'Dodaj do koszyka' })
+    .click();
+  await expect(page.getByText('Dodano do koszyka: Krem do twarzy na dzień')).toBeVisible();
+
+  // Wpisanie kodu rabatowego w koszyku.
+  await page.getByRole('link', { name: 'Koszyk' }).click();
+  await page.getByLabel('Kod rabatowy').fill('CZARNY20');
+  await page.getByRole('button', { name: 'Zastosuj kod' }).click();
+
+  // Komunikat i suma po rabacie: 26,39 zł - 20% = 21,11 zł.
+  await expect(page.getByText('Kod CZARNY20 przyjęty: -20% na całe zamówienie.')).toBeVisible();
+  await expect(page.getByText('razem: 21,11 zł')).toBeVisible();
+
+  // Sprzątanie: najpierw kod, potem krem, żeby następne uruchomienie zaczynało od pustego koszyka.
+  await page.getByRole('button', { name: 'Usuń kod' }).click();
+  await expect(page.getByText('Kod CZARNY20 przyjęty: -20% na całe zamówienie.')).toBeHidden();
+  const wierszKremu = page.getByRole('row').filter({ hasText: 'Krem do twarzy na dzień' });
+  await wierszKremu.getByRole('button', { name: 'Usuń' }).click();
+  await expect(page.getByText('Koszyk jest pusty.')).toBeVisible();
+});
+
+// Karta produktu jest dostępna bez logowania, więc ten test się nie loguje.
+test('na karcie niedostępnego serum nie da się dodać produktu do koszyka', async ({ page }) => {
+  await page.goto('/');
+
+  // Otwarcie karty przez kafelek (nazwa serum jest też w tabeli, dlatego zawężamy do kafelka).
+  const kafelekSerum = page.getByRole('article', { name: 'Serum z witaminą C' });
+  await kafelekSerum.getByRole('link', { name: 'Serum z witaminą C' }).click();
+  await expect(page.getByRole('heading', { name: 'Serum z witaminą C' })).toBeVisible();
+
+  // Przycisk i pole ilości są wyłączone (szare, nie da się w nie kliknąć).
+  await expect(page.getByRole('button', { name: 'Dodaj do koszyka' })).toBeDisabled();
+  await expect(page.getByLabel('Ilość')).toBeDisabled();
+});
