@@ -20,7 +20,8 @@ test.describe('Ceny promocyjne na kafelkach', () => {
 
       await expect(kafelek.getByTestId('tile-old-price')).toHaveText(produkt.staraCena);
       await expect(kafelek.getByTestId('tile-price')).toHaveText(produkt.nowaCena);
-      await expect(kafelek.getByTestId('tile-badge')).toBeVisible();
+      // Tego obiecuje nazwa testu: plakietka pokazuje rabat 20%, a nie tylko jest widoczna.
+      await expect(kafelek.getByTestId('tile-badge')).toHaveText('-20%');
     });
   }
 });
