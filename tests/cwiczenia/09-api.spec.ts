@@ -29,13 +29,34 @@ test.describe('API zamówień', () => {
     );
   });
 
-  test.fixme('POST /api/orders tworzy zamówienie ze statusem „new”', async ({ request }) => {
-    // TODO 1: zaloguj się jako user i weź token
-    // TODO 2: POST /api/orders z danymi { product_id: 20, qty: 2 }
-    // TODO 3: sprawdź status 201 i treść: product „Płyn do mycia naczyń”, qty 2, status „new”,
-    //   numer w formacie ZAM-1234
-    // TODO 4: posprzątaj: zaloguj się jako admin i wyślij
-    //   POST /api/admin/orders/<numer>/cancel (oczekiwany status 200)
+  test('POST /api/orders tworzy zamówienie ze statusem „new”', async ({ request }) => {
+    // Logowanie jako klient
+    const logowanie = await request.post('/api/login', { data: { login: 'user', password: 'user123' } });
+    expect(logowanie.status()).toBe(200);
+    const { token } = await logowanie.json();
+
+    // Nowe zamówienie: 2 sztuki produktu 20
+    const odpowiedz = await request.post('/api/orders', {
+      headers: { Authorization: `Bearer ${token}` },
+      data: { product_id: 20, qty: 2 },
+    });
+
+    expect(odpowiedz.status()).toBe(201);
+    const zamowienie = await odpowiedz.json();
+    // objectContaining: sprawdzamy wybrane pola, pozostałe (np. data) mogą być dowolne
+    expect(zamowienie).toEqual(
+      expect.objectContaining({ product: 'Płyn do mycia naczyń', qty: 2, status: 'new' }),
+    );
+    // Numer jest za każdym razem inny, więc sprawdzamy tylko format: ZAM- i cztery cyfry
+    expect(zamowienie.number).toMatch(/^ZAM-\d{4}$/);
+
+    // Sprzątanie: admin anuluje zamówienie, towar wraca na stan
+    const logowanieAdmina = await request.post('/api/login', { data: { login: 'admin', password: 'admin123' } });
+    const { token: tokenAdmina } = await logowanieAdmina.json();
+    const anulowanie = await request.post(`/api/admin/orders/${zamowienie.number}/cancel`, {
+      headers: { Authorization: `Bearer ${tokenAdmina}` },
+    });
+    expect(anulowanie.status()).toBe(200);
   });
 
   test('POST /api/orders z ilością 0 zwraca 400 z błędem pola qty', async ({ request }) => {
@@ -65,8 +86,34 @@ test.describe('API zamówień', () => {
     expect(await odpowiedz.json()).toEqual({ error: 'Wymagane logowanie' });
   });
 
-  test.fixme('GET /api/orders/ZAM-9999 zwraca 404', async ({ request }) => {
-    // TODO: zaloguj się jako user, zapytaj o nieistniejące zamówienie, sprawdź status 404 i treść
+  test('GET /api/orders/ZAM-9999 zwraca 404', async ({ request }) => {
+    // Logowanie jako klient: bez tokena API odpowie 401, a nie 404
+    const logowanie = await request.post('/api/login', { data: { login: 'user', password: 'user123' } });
+    expect(logowanie.status()).toBe(200);
+    const { token } = await logowanie.json();
+
+    // Pytamy o zamówienie, którego nie ma w bazie
+    const odpowiedz = await request.get('/api/orders/ZAM-9999', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    expect(odpowiedz.status()).toBe(404);
+    expect(await odpowiedz.json()).toEqual({ error: 'Nie ma takiego zamówienia' });
+  });
+
+  test('GET /api/orders/ZAM-1007 cudzego zamówienia zwraca 404 jak nieistniejące', async ({ request }) => {
+    // ZAM-1007 istnieje w danych startowych, ale należy do klienta „biuro”, a nie do „user”
+    const logowanie = await request.post('/api/login', { data: { login: 'user', password: 'user123' } });
+    expect(logowanie.status()).toBe(200);
+    const { token } = await logowanie.json();
+
+    const odpowiedz = await request.get('/api/orders/ZAM-1007', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // API nie zdradza, że cudze zamówienie istnieje: odpowiedź taka sama jak dla ZAM-9999
+    expect(odpowiedz.status()).toBe(404);
+    expect(await odpowiedz.json()).toEqual({ error: 'Nie ma takiego zamówienia' });
   });
 });
 
