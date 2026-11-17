@@ -33,7 +33,7 @@ PowerShell, z katalogu głównego repo. Polecenia `npx` i `git` wpisujesz w okni
    Oczekiwany wynik: pierwsza linia `[main 1a2b3c4] Praca przed zadaniem D1` (skrót będzie inny). Odpowiedź `nothing to commit, working tree clean` też jest w porządku: wszystko było już zapisane.
 
 2. **Przełącz się na gałąź zadania i uruchom pliki startowe.**
-   ```powershell
+   ```powershellgit remote add upstream https://github.com/agentGreg/e2e-podstawy-demo.git
    git fetch origin
    git switch extra/d1-przegladarki-i-dane
    npx playwright test tests/extra/d1
