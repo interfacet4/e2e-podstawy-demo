@@ -21,6 +21,8 @@ test.describe('API zamówień', () => {
     const odpowiedz = await request.get('/api/orders', {
       headers: { Authorization: `Bearer ${token}` },
     });
+    // Podgląd odpowiedzi w terminalu: status i treść
+    console.log('GET /api/orders:', odpowiedz.status(), await odpowiedz.json());
 
     expect(odpowiedz.status()).toBe(200);
     const zamowienia = await odpowiedz.json();
@@ -40,6 +42,7 @@ test.describe('API zamówień', () => {
       headers: { Authorization: `Bearer ${token}` },
       data: { product_id: 20, qty: 2 },
     });
+    console.log('POST /api/orders (qty 2):', odpowiedz.status(), await odpowiedz.json());
 
     expect(odpowiedz.status()).toBe(201);
     const zamowienie = await odpowiedz.json();
@@ -56,6 +59,7 @@ test.describe('API zamówień', () => {
     const anulowanie = await request.post(`/api/admin/orders/${zamowienie.number}/cancel`, {
       headers: { Authorization: `Bearer ${tokenAdmina}` },
     });
+    console.log(`POST /api/admin/orders/${zamowienie.number}/cancel:`, anulowanie.status(), await anulowanie.json());
     expect(anulowanie.status()).toBe(200);
   });
 
@@ -70,6 +74,7 @@ test.describe('API zamówień', () => {
       headers: { Authorization: `Bearer ${token}` },
       data: { product_id: 20, qty: 0 },
     });
+    console.log('POST /api/orders (qty 0):', odpowiedz.status(), await odpowiedz.json());
 
     expect(odpowiedz.status()).toBe(400);
     expect(await odpowiedz.json()).toEqual({
@@ -81,6 +86,7 @@ test.describe('API zamówień', () => {
   test('GET /api/orders bez logowania zwraca 401', async ({ request }) => {
     // Żądanie bez nagłówka Authorization, czyli bez tokena
     const odpowiedz = await request.get('/api/orders');
+    console.log('GET /api/orders bez tokena:', odpowiedz.status(), await odpowiedz.json());
 
     expect(odpowiedz.status()).toBe(401);
     expect(await odpowiedz.json()).toEqual({ error: 'Wymagane logowanie' });
@@ -96,6 +102,7 @@ test.describe('API zamówień', () => {
     const odpowiedz = await request.get('/api/orders/ZAM-9999', {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log('GET /api/orders/ZAM-9999:', odpowiedz.status(), await odpowiedz.json());
 
     expect(odpowiedz.status()).toBe(404);
     expect(await odpowiedz.json()).toEqual({ error: 'Nie ma takiego zamówienia' });
@@ -110,6 +117,7 @@ test.describe('API zamówień', () => {
     const odpowiedz = await request.get('/api/orders/ZAM-1007', {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log('GET /api/orders/ZAM-1007 jako user:', odpowiedz.status(), await odpowiedz.json());
 
     // API nie zdradza, że cudze zamówienie istnieje: odpowiedź taka sama jak dla ZAM-9999
     expect(odpowiedz.status()).toBe(404);
@@ -131,6 +139,7 @@ test.describe('Anulowanie zamówienia przygotowanego przez API', () => {
       headers: { Authorization: `Bearer ${token}` },
       data: { product_id: 20, qty: 1 },
     });
+    console.log('beforeEach, POST /api/orders (qty 1):', odpowiedz.status(), await odpowiedz.json());
     expect(odpowiedz.status()).toBe(201);
     numer = (await odpowiedz.json()).number;
   });
@@ -145,6 +154,7 @@ test.describe('Anulowanie zamówienia przygotowanego przez API', () => {
     const odpowiedz = await request.post(`/api/admin/orders/${numer}/cancel`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log(`afterEach, POST /api/admin/orders/${numer}/cancel:`, odpowiedz.status(), await odpowiedz.json());
     // 200: anulowane teraz; 409: test już je anulował w panelu
     expect([200, 409]).toContain(odpowiedz.status());
   });
