@@ -15,7 +15,7 @@ test('kod CZARNY20 zostaje przyjęty w koszyku', async ({ page }) => {
   await page.goto('/koszyk');
 
   // Kod rabatowy
-  await page.getByLabel('Kod rabatowy').fill('CZARNY20');
+  await page.getByLabel('Kod rabatowy').fill('CZARNY99');
   await page.getByRole('button', { name: 'Zastosuj kod' }).click();
 
   // Kod przyjęty: nie ma komunikatu o błędnym kodzie

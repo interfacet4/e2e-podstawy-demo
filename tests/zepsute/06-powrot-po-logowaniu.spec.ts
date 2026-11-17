@@ -12,6 +12,10 @@ test('po zalogowaniu klient wraca na stronę adresu dostawy', async ({ page }) =
   await page.keyboard.press('Enter');
 
   // Po zalogowaniu jesteśmy z powrotem na stronie adresu
-  expect(page.url()).toContain('/konto/adres');
+  //await expect(page.url()).toContain('/konto/adres');
+  // toHaveURL czeka, aż po logowaniu nastąpi przekierowanie
+  await expect(page).toHaveURL(/\/konto\/adres$/);
   await expect(page.getByRole('heading', { name: 'Zmiana adresu dostawy' })).toBeVisible();
 });
+
+//TODO - brak await w linii 15 
