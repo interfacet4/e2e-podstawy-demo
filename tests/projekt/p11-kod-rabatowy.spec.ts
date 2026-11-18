@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { zaloguj, zalogujPrzezApi } from '../pomocnicze/logowanie';
 
+// Na starcie wypisuje w terminalu, na jaki adres idą testy z tego pliku:
+// localhost (aplikacja lokalna) albo serwer szkoleniowy z $env:BASE_URL.
+test.beforeAll(async ({}, testInfo) => {
+  console.log(`P11: testy idą na adres ${testInfo.project.use.baseURL}`);
+});
+
 // P11. Kod rabatowy w koszyku (docs/projekt.md).
 // Klient: konto domyślne z zaloguj() (dziś tester12, albo konto pary z APP_USER).
 

@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { zaloguj, zalogujPrzezApi } from '../pomocnicze/logowanie';
 
+// Na starcie wypisuje w terminalu, na jaki adres idą testy z tego pliku:
+// localhost (aplikacja lokalna) albo serwer szkoleniowy z $env:BASE_URL.
+test.beforeAll(async ({}, testInfo) => {
+  console.log(`P9: testy idą na adres ${testInfo.project.use.baseURL}`);
+});
+
 // P9. Ta sama cena promocyjna w trzech miejscach (docs/projekt.md).
 // Klient: konto domyślne z zaloguj() (dziś tester12, albo konto pary z APP_USER).
 // Oczekiwane ceny z wymagania: stara 32,99 zł, nowa 26,39 zł, plakietka -20%.

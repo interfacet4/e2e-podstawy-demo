@@ -1,5 +1,11 @@
 import { test, expect } from '@playwright/test';
 
+// Na starcie wypisuje w terminalu, na jaki adres idą testy z tego pliku:
+// localhost (aplikacja lokalna) albo serwer szkoleniowy z $env:BASE_URL.
+test.beforeAll(async ({}, testInfo) => {
+  console.log(`P5: testy idą na adres ${testInfo.project.use.baseURL}`);
+});
+
 // P5. Katalog produktów w API (docs/projekt.md).
 // Katalog jest publiczny, więc testy nie logują się.
 test.describe('P5: katalog produktów w API', () => {

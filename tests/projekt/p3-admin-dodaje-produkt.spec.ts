@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { zaloguj } from '../pomocnicze/logowanie';
 
+// Na starcie wypisuje w terminalu, na jaki adres idą testy z tego pliku:
+// localhost (aplikacja lokalna) albo serwer szkoleniowy z $env:BASE_URL.
+test.beforeAll(async ({}, testInfo) => {
+  console.log(`P3: testy idą na adres ${testInfo.project.use.baseURL}`);
+});
+
 // P3. Administrator dodaje produkt (docs/projekt.md).
 // Założenia scenariusza wskazują konto admin, dlatego podajemy je w zaloguj().
 // Sprzątanie: aplikacja nie ma usuwania produktów (ani w panelu, ani w API).
