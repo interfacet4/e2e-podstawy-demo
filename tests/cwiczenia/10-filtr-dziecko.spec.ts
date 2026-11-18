@@ -18,8 +18,12 @@ test('filtr kategorii „Dziecko” pokazuje dokładnie 3 produkty', async ({ pa
   // Tabela ma dokładnie 3 produkty: liczymy tylko wiersze z komórkami, bez wiersza nagłówka.
   await expect(page.getByRole('row').filter({ has: page.getByRole('cell') })).toHaveCount(3);
 
-  // Wszystkie 3 produkty mają w kolumnie „Kategoria” wartość „Dziecko”.
+  // W tabeli nie ma produktu z inną kategorią niż „Dziecko”.
+  // Liczymy wiersze z komórkami, w których nie ma komórki „Dziecko”: bez filtra byłoby ich 18.
   await expect(
-    page.getByRole('row').filter({ has: page.getByRole('cell', { name: 'Dziecko', exact: true }) }),
-  ).toHaveCount(3);
+    page
+      .getByRole('row')
+      .filter({ has: page.getByRole('cell') })
+      .filter({ hasNot: page.getByRole('cell', { name: 'Dziecko', exact: true }) }),
+  ).toHaveCount(0);
 });
