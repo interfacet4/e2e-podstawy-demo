@@ -15,7 +15,9 @@ test.beforeAll(async () => {
 // P16. Ilość z karty produktu (docs/projekt.md).
 // Klient: konto domyślne z zaloguj() (dziś tester12, albo konto pary z APP_USER).
 
-// Koszyk zaczyna i kończy pusty, więc suma koszyka to tylko żel.
+// Zmiana wymagań Bożeny z 13:00: zamiast 3 żeli 24 kalendarze adwentowe (po jednym na okienko).
+
+// Koszyk zaczyna i kończy pusty (DELETE czyści cały koszyk), więc suma koszyka to tylko kalendarze.
 test.beforeEach(async ({ request }) => {
   await zalogujPrzezApi(request);
   await request.delete('/api/cart');
@@ -25,21 +27,21 @@ test.afterEach(async ({ request }) => {
   expect((await request.delete('/api/cart')).status()).toBe(200);
 });
 
-test('3 sztuki żelu z karty produktu dają w koszyku ilość 3, wartość 29,97 zł i taką samą sumę', async ({ page }) => {
+test('24 kalendarze adwentowe z karty produktu dają w koszyku ilość 24, wartość 959,76 zł i taką samą sumę', async ({ page }) => {
   await zaloguj(page);
   await page.goto('/');
-  await page.getByRole('article', { name: 'Żel pod prysznic' }).getByRole('link', { name: 'Żel pod prysznic' }).click();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Żel pod prysznic');
+  await page.getByRole('article', { name: 'Kalendarz adwentowy 2026' }).getByRole('link', { name: 'Kalendarz adwentowy 2026' }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kalendarz adwentowy 2026');
 
-  await page.getByLabel('Ilość').fill('3');
+  await page.getByLabel('Ilość').fill('24');
   await page.getByRole('button', { name: 'Dodaj do koszyka' }).click();
   await page.getByRole('navigation', { name: 'Menu główne' }).getByRole('link', { name: 'Koszyk' }).click();
 
-  // Wiersz żelu: ilość 3 i wartość 29,97 zł.
-  const wiersz = page.getByRole('row').filter({ hasText: 'Żel pod prysznic' });
-  await expect(wiersz.getByTestId('cart-item-qty')).toHaveText('3');
-  await expect(wiersz.getByRole('cell', { name: '29,97 zł', exact: true })).toBeVisible();
+  // Wiersz kalendarza: ilość 24 i wartość 959,76 zł.
+  const wiersz = page.getByRole('row').filter({ hasText: 'Kalendarz adwentowy 2026' });
+  await expect(wiersz.getByTestId('cart-item-qty')).toHaveText('24');
+  await expect(wiersz.getByRole('cell', { name: '959,76 zł', exact: true })).toBeVisible();
 
-  // Suma „razem” równa sumie kolumny „Wartość”: w koszyku jest tylko żel, więc 29,97 zł.
-  await expect(page.getByTestId('cart-total')).toHaveText('29,97 zł');
+  // Suma „razem” równa sumie kolumny „Wartość”: w koszyku są tylko kalendarze, więc 959,76 zł.
+  await expect(page.getByTestId('cart-total')).toHaveText('959,76 zł');
 });
