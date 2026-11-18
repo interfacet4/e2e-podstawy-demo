@@ -8,10 +8,11 @@ import { zaloguj, zalogujPrzezApi } from '../pomocnicze/logowanie';
 
 let numerZamowienia = '';
 
-// Dane: własne zamówienie klienta user (1 balsam).
+// Dane: własne zamówienie klienta user (1 szczoteczka do zębów, id 14).
+// Nie balsam: jego stan sprawdza P1, więc zamówienie balsamu mogłoby mu przeszkodzić.
 test.beforeEach(async ({ request }) => {
   await zalogujPrzezApi(request, 'user', 'user123');
-  const odpowiedz = await request.post('/api/orders', { data: { product_id: 10, qty: 1 } });
+  const odpowiedz = await request.post('/api/orders', { data: { product_id: 14, qty: 1 } });
   expect(odpowiedz.status()).toBe(201);
   numerZamowienia = (await odpowiedz.json()).number;
 });
@@ -53,6 +54,8 @@ test('administrator anuluje zamówienie klienta w panelu, a inne zamówienia zac
   const odpowiedz = await request.get(`/api/orders/${numerZamowienia}`);
   expect((await odpowiedz.json()).status).toBe('cancelled');
 
-  // Inne zamówienia nie zmieniły statusu.
+  // Inne zamówienia nie zmieniły statusu. Ta asercja przejdzie także bez kliknięcia „Anuluj”:
+  // zostaje celowo, bo sprawdza zdanie wymagania (anulowanie nie rusza innych zamówień).
+  // Inne testy też zmieniają statusy, dlatego pakiet uruchamiamy z --workers=1.
   expect(await statusyInnych()).toEqual(przed);
 });

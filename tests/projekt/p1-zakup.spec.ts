@@ -42,7 +42,8 @@ test('zakup balsamu za pobraniem tworzy zamówienie „Nowe” i zmniejsza stan 
   await expect(page.getByTestId('flash')).toHaveText(`Złożono zamówienie: ${numerZamowienia}`);
 
   // Na liście: wiersz z tym numerem, balsam i status „Nowe”.
-  const wiersz = page.getByRole('row').filter({ hasText: numerZamowienia });
+  // Wiersz szukamy po linku z dokładnym numerem: gdyby numeru zabrakło, nie złapiemy innego wiersza.
+  const wiersz = page.getByRole('row').filter({ has: page.getByRole('link', { name: numerZamowienia, exact: true }) });
   await expect(wiersz.getByRole('cell', { name: 'Balsam do ciała', exact: true })).toBeVisible();
   await expect(wiersz.getByTestId('order-status')).toHaveText('Nowe');
 

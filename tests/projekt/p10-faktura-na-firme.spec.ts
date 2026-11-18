@@ -63,7 +63,8 @@ test.describe('P10: faktura na firmę', () => {
     await page.getByRole('button', { name: 'Złóż zamówienie (płatność przy odbiorze)' }).click();
 
     await expect(page.getByText('Nieprawidłowy NIP: błędna suma kontrolna', { exact: true })).toBeVisible();
-    // Klient zostaje w koszyku, a kalendarz nadal w nim jest.
+    // Klient zostaje w koszyku, a kalendarz nadal w nim jest. Te asercje przejdą także bez kliknięcia:
+    // zostają, bo sprawdzają zdanie wymagania. O akcji świadczy komunikat o NIP wyżej.
     await expect(page.getByRole('heading', { name: 'Koszyk', level: 1 })).toBeVisible();
     await expect(page.getByRole('row').filter({ hasText: 'Kalendarz adwentowy 2026' })).toBeVisible();
   });

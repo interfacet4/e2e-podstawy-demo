@@ -52,6 +52,8 @@ test.describe('P11: kod rabatowy w koszyku', () => {
 
     await expect(page.getByRole('alert')).toHaveText('Nie ma takiego kodu rabatowego: NIEMA');
     // „Bez rabatu”: nie ma linii z rabatem, a koszyk kosztuje tyle co mydło (4,99 zł).
+    // Te dwie asercje przejdą także bez wpisania kodu: zostają, bo sprawdzają zdanie wymagania.
+    // O akcji świadczy komunikat wyżej.
     await expect(page.getByText('Przed rabatem:')).toHaveCount(0);
     await expect(page.getByTestId('cart-total')).toHaveText('4,99 zł');
   });

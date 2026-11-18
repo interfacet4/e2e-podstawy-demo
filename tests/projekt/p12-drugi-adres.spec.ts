@@ -47,7 +47,8 @@ test('nowy adres ustawiony jako domyślny ma jedyną plakietkę, a po jego usuni
   await expect(nowy.getByTestId('default-address')).toHaveText('Domyślny');
   await expect(page.getByTestId('default-address')).toHaveCount(1);
 
-  // „Adres główny” nie ma przycisku „Usuń”.
+  // „Adres główny” nie ma przycisku „Usuń”. To stan stały, niezależny od akcji testu:
+  // asercja zostaje, bo sprawdza zdanie wymagania. Tekst „Usuń” jest na stronie (przy nowym adresie).
   await expect(glowny.getByRole('button', { name: /Usuń/ })).toHaveCount(0);
 
   // Test usuwa swój adres, a „Domyślny” wraca do „Adres główny”.

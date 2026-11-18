@@ -12,6 +12,8 @@ test.describe('P4: panel administratora', () => {
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Brak uprawnień');
     await expect(page.getByText('Ta strona wymaga roli admin.', { exact: true })).toBeVisible();
+    // Menu klienta nie zależy od wejścia na /admin, więc ta asercja nie pada bez akcji testu.
+    // Zostaje, bo sprawdza zdanie wymagania; drugi test pokazuje, że „Panel admina” istnieje w menu admina.
     await expect(page.getByRole('navigation', { name: 'Menu główne' }).getByRole('link', { name: 'Panel admina' })).toHaveCount(0);
   });
 
