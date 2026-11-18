@@ -20,8 +20,8 @@ test('produkt w promocji trafia do koszyka z ceną promocyjną', async ({ page }
     .getByRole('button', { name: 'Dodaj do koszyka' })
     .click();
 
-  // TODO 3: sprawdź komunikat „Dodano do koszyka: Krem do twarzy na dzień”.
-  await expect(page.getByText('Dodano do koszyka: Krem do twarzy na dzień')).toBeVisible();
+  // TODO 3: sprawdź komunikat „Produkt w koszyku: Krem do twarzy na dzień”.
+  await expect(page.getByText('Produkt w koszyku: Krem do twarzy na dzień')).toBeVisible();
 
   // TODO 4: przejdź do koszyka (link „Koszyk” w menu).
   await page.getByRole('link', { name: 'Koszyk' }).click();

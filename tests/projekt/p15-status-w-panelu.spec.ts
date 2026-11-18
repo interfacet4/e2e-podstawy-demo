@@ -17,16 +17,16 @@ test.beforeEach(async ({ request }) => {
   numerZamowienia = (await odpowiedz.json()).number;
 });
 
-test('administrator zmienia status na „Opłacone”, potem „Wysłane”, a klient widzi w API „shipped”', async ({ page, request }) => {
+test('administrator zmienia status na „Zapłacone”, potem „Wysłane”, a klient widzi w API „shipped”', async ({ page, request }) => {
   await zaloguj(page, 'admin', 'admin123');
   await page.goto(`/admin/zamowienia/${numerZamowienia}`);
 
-  // Nowe → Opłacone.
-  await page.getByLabel('Status zamówienia').selectOption('Opłacone');
+  // Nowe → Zapłacone.
+  await page.getByLabel('Status zamówienia').selectOption('Zapłacone');
   await page.getByRole('button', { name: 'Zapisz status' }).click();
-  await expect(page.getByTestId('order-status')).toHaveText('Opłacone');
+  await expect(page.getByTestId('order-status')).toHaveText('Zapłacone');
 
-  // Opłacone → Wysłane.
+  // Zapłacone → Wysłane.
   await page.getByLabel('Status zamówienia').selectOption('Wysłane');
   await page.getByRole('button', { name: 'Zapisz status' }).click();
   await expect(page.getByTestId('order-status')).toHaveText('Wysłane');

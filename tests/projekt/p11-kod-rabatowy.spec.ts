@@ -39,7 +39,7 @@ test.describe('P11: kod rabatowy w koszyku', () => {
 
   test('kod CZARNY20 zostaje przyjęty, a pod sumą jest linia z kwotą przed rabatem i rabatem', async ({ page }) => {
     await page.getByLabel('Kod rabatowy').fill('CZARNY20');
-    await page.getByRole('button', { name: 'Zastosuj kod' }).click();
+    await page.getByRole('button', { name: 'Użyj kodu' }).click();
 
     await expect(page.getByRole('status')).toHaveText('Kod CZARNY20 przyjęty: -20% na całe zamówienie.');
     // Mydło kosztuje 4,99 zł (dane startowe), 20% z 4,99 zł to 1,00 zł po zaokrągleniu do grosza.
@@ -48,7 +48,7 @@ test.describe('P11: kod rabatowy w koszyku', () => {
 
   test('nieznany kod NIEMA daje komunikat o braku kodu i nie obniża ceny', async ({ page }) => {
     await page.getByLabel('Kod rabatowy').fill('NIEMA');
-    await page.getByRole('button', { name: 'Zastosuj kod' }).click();
+    await page.getByRole('button', { name: 'Użyj kodu' }).click();
 
     await expect(page.getByRole('alert')).toHaveText('Nie ma takiego kodu rabatowego: NIEMA');
     // „Bez rabatu”: nie ma linii z rabatem, a koszyk kosztuje tyle co mydło (4,99 zł).
@@ -60,7 +60,7 @@ test.describe('P11: kod rabatowy w koszyku', () => {
 
   test('kod WLOSY15 bez produktów z kategorii Włosy daje komunikat, że kod działa tylko na tę kategorię', async ({ page }) => {
     await page.getByLabel('Kod rabatowy').fill('WLOSY15');
-    await page.getByRole('button', { name: 'Zastosuj kod' }).click();
+    await page.getByRole('button', { name: 'Użyj kodu' }).click();
 
     await expect(page.getByRole('alert')).toHaveText(
       'Kod WLOSY15 działa tylko na produkty z kategorii Włosy. W koszyku nie ma takich produktów.',

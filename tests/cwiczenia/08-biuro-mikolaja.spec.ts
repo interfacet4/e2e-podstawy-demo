@@ -25,7 +25,7 @@ test('Biuro Mikołaja: zamówienie na firmę, status „Wysłane” i faktura z 
   await page.goto('/produkt/21');
   await page.getByLabel('Ilość').fill('10');
   await page.getByRole('button', { name: 'Dodaj do koszyka' }).click();
-  await expect(page.getByText('Dodano do koszyka: Kalendarz adwentowy 2026')).toBeVisible();
+  await expect(page.getByText('Produkt w koszyku: Kalendarz adwentowy 2026')).toBeVisible();
 
   // Krok 3. Koszyk: jedna pozycja, ilość 10, razem 399,90 zł (10 × 39,99 zł).
   await page.getByRole('link', { name: 'Koszyk' }).click();
@@ -50,7 +50,7 @@ test('Biuro Mikołaja: zamówienie na firmę, status „Wysłane” i faktura z 
   await expect(page.getByRole('heading', { name: `Zamówienie ${numer}` })).toBeVisible();
   await expect(page.getByText('Status: Nowe')).toBeVisible();
   await expect(page.getByText('Faktura na firmę: Biuro Mikołaja, NIP 2412241228')).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Pobierz fakturę' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Faktura (HTML)' })).toBeVisible();
 
   // Krok 6. Admin otwiera to zamówienie w panelu.
   await page.getByRole('button', { name: 'Wyloguj' }).click();
@@ -63,10 +63,10 @@ test('Biuro Mikołaja: zamówienie na firmę, status „Wysłane” i faktura z 
   await expect(page.getByText('Status: Nowe')).toBeVisible();
   await expect(page.getByLabel('Status zamówienia')).toBeVisible();
 
-  // Krok 7. Status „Opłacone”.
-  await page.getByLabel('Status zamówienia').selectOption('Opłacone');
+  // Krok 7. Status „Zapłacone”.
+  await page.getByLabel('Status zamówienia').selectOption('Zapłacone');
   await page.getByRole('button', { name: 'Zapisz status' }).click();
-  await expect(page.getByText('Status: Opłacone')).toBeVisible();
+  await expect(page.getByText('Status: Zapłacone')).toBeVisible();
 
   // Krok 8. Status „Wysłane”.
   await page.getByLabel('Status zamówienia').selectOption('Wysłane');
@@ -85,7 +85,7 @@ test('Biuro Mikołaja: zamówienie na firmę, status „Wysłane” i faktura z 
 
   // Krok 10. Pobranie faktury: najpierw czekanie na pobranie, potem kliknięcie.
   const pobieranie = page.waitForEvent('download');
-  await page.getByRole('link', { name: 'Pobierz fakturę' }).click();
+  await page.getByRole('link', { name: 'Faktura (HTML)' }).click();
   const plik = await pobieranie;
   expect(plik.suggestedFilename()).toBe(`faktura-${numer}.html`);
 

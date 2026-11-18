@@ -34,7 +34,7 @@ test.describe('faktura na firmę', () => {
     await expect(page.getByText('Faktura na firmę:')).toHaveText('Faktura na firmę: Biuro Mikołaja, NIP 1012023036');
 
     const pobieranie = page.waitForEvent('download');
-    const link = page.getByRole('link', { name: 'Pobierz fakturę' });
+    const link = page.getByRole('link', { name: 'Faktura (HTML)' });
     await link.click();
     expect((await pobieranie).suggestedFilename()).toBe(`faktura-${numer}.html`);
 
