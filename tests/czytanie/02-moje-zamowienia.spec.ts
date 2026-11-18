@@ -5,7 +5,8 @@ import { zaloguj } from '../pomocnicze/logowanie';
 
 test.describe('Moje zamówienia', { tag: '@zamowienia' }, () => {
   test('lista pokazuje zamówienia klienta z ich statusem', async ({ page }) => {
-    await zaloguj(page);
+    // ZAM-1001 i ZAM-1002 należą do konta user, więc logujemy się nim, a nie kontem domyślnym.
+    await zaloguj(page, 'user', 'user123');
     await page.goto('/zamowienia');
 
     await expect(page).toHaveURL(/\/zamowienia$/);
@@ -22,7 +23,8 @@ test.describe('Moje zamówienia', { tag: '@zamowienia' }, () => {
   });
 
   test('klient nie widzi zamówienia innej osoby', async ({ page }) => {
-    await zaloguj(page);
+    // ZAM-1001 i ZAM-1002 należą do konta user, więc logujemy się nim, a nie kontem domyślnym.
+    await zaloguj(page, 'user', 'user123');
     await page.goto('/zamowienia');
 
     await expect(page.getByRole('row').filter({ hasText: 'ZAM-1001' })).toBeVisible();
