@@ -1,10 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { zaloguj, zalogujPrzezApi } from '../pomocnicze/logowanie';
 
+// Ten plik domyślnie idzie na wspólny serwer szkoleniowy (działa tylko 16–18.11.2026).
+// Inny adres podasz zmienną, np. lokalnie: $env:BASE_URL="http://localhost:4100"
+const adresAplikacji = process.env.BASE_URL || 'https://namssor-376292984721.europe-central2.run.app';
+test.use({ baseURL: adresAplikacji });
+
 // Na starcie wypisuje w terminalu, na jaki adres idą testy z tego pliku:
-// localhost (aplikacja lokalna) albo serwer szkoleniowy z $env:BASE_URL.
-test.beforeAll(async ({}, testInfo) => {
-  console.log(`P11: testy idą na adres ${testInfo.project.use.baseURL}`);
+// serwer szkoleniowy albo adres z $env:BASE_URL.
+test.beforeAll(async () => {
+  console.log(`P11: testy idą na adres ${adresAplikacji}`);
 });
 
 // P11. Kod rabatowy w koszyku (docs/projekt.md).
