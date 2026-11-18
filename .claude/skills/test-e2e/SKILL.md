@@ -14,7 +14,7 @@ Użytkownik prosi, żeby testy logowały się gotowymi funkcjami. To wyjątek od
 - Logowanie w przeglądarce: `await zaloguj(page);`, potem przejście na stronę testu (`page.goto(...)`), bo funkcja kończy na stronie głównej.
 - Logowanie w teście API albo w `beforeEach`/`afterEach` przygotowującym dane: `await zalogujPrzezApi(request);`.
 - Import (ścieżka względna od pliku testu): z `tests/cwiczenia/` i `tests/czytanie/` to `import { zaloguj } from '../pomocnicze/logowanie';`. Drugi import jest dodatkowy, `import { test, expect } from '@playwright/test';` zostaje.
-- Bez argumentów funkcja loguje konto ze zmiennych `APP_USER`/`APP_PASSWORD`, a gdy ich nie ma, `user` / `user123`. Do testu wymagania klienta wywołuj ją bez argumentów.
+- Bez argumentów funkcja loguje konto ze zmiennych `APP_USER`/`APP_PASSWORD`, a gdy ich nie ma, `tester12` / `czarny-piatek-2026`. Wywołuj ją bez argumentów we wszystkich testach, chyba że założenia testu wskazują inne konto (np. `user` albo `admin`) — wtedy podaj je w argumentach.
 - Inne konto (np. admin): `await zaloguj(page, 'admin', 'admin123');`. Nie przepisuj ręcznie pól `Login`, `Hasło` i przycisku `Zaloguj`.
 - Nie dopisuj po `zaloguj` asercji „Zalogowano jako …”, bo funkcja sama ją sprawdza.
 

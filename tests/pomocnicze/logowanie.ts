@@ -2,13 +2,15 @@ import { expect, type APIRequestContext, type Page } from '@playwright/test';
 
 // Logowanie wspólne dla wielu testów (ćwiczenie 11 i projekt).
 // Bez parametrów loguje konto ze zmiennych APP_USER i APP_PASSWORD,
-// a gdy ich nie ma, konto demo user / user123.
-// Na wspólnym serwerze ustawiasz konto pary, np.:
-//   $env:APP_USER="tester05"
+// a gdy ich nie ma, konto szkoleniowe tester12 (zasada na dzień 18.11.2026).
+// To samo konto ustawisz jawnie w oknie testów:
+//   $env:APP_USER="tester12"
 //   $env:APP_PASSWORD="czarny-piatek-2026"
+// Inne konto (np. user albo admin z założeń testu) podajesz w wywołaniu, patrz niżej.
+// Hasło jest fikcyjne: konta tester01–tester12 istnieją tylko w bazie szkoleniowej Namssor.
 
-const domyslnyLogin = () => process.env.APP_USER || 'user';
-const domyslneHaslo = () => process.env.APP_PASSWORD || 'user123';
+const domyslnyLogin = () => process.env.APP_USER || 'tester12';
+const domyslneHaslo = () => process.env.APP_PASSWORD || 'czarny-piatek-2026';
 
 // Logowanie przez formularz w przeglądarce.
 // Wywołanie w teście: await zaloguj(page);
